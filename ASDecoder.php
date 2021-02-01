@@ -21,9 +21,8 @@ class ASDecoder {
      * Parse a provided Sign In with Apple identity token.
      *
      * @param string $identityToken
-     * @return object|null
      */
-    public static function getAppleSignInPayload(string $identityToken) : ?object
+    public static function getAppleSignInPayload(string $identityToken)
     {
         $identityPayload = self::decodeIdentityToken($identityToken);
         return new ASPayload($identityPayload);
@@ -33,9 +32,8 @@ class ASDecoder {
      * Decode the Apple encoded JWT using Apple's public key for the signing.
      *
      * @param string $identityToken
-     * @return object
      */
-    public static function decodeIdentityToken(string $identityToken) : object {
+    public static function decodeIdentityToken(string $identityToken) {
         $publicKeyKid = JWT::getPublicKeyKid($identityToken);
 
         $publicKeyData = self::fetchPublicKey($publicKeyKid);
@@ -43,7 +41,7 @@ class ASDecoder {
         $publicKey = $publicKeyData['publicKey'];
         $alg = $publicKeyData['alg'];
 
-        $payload = JWT::decode($identityToken, $publicKey, [$alg]);
+        $payload = (object) JWT::decode($identityToken, $publicKey, [$alg]);
 
         return $payload;
     }
@@ -53,9 +51,8 @@ class ASDecoder {
      * the Sign In JWT.
      *
      * @param string $publicKeyKid
-     * @return array
      */
-    public static function fetchPublicKey(string $publicKeyKid) : array {
+    public static function fetchPublicKey(string $publicKeyKid)  {
         $publicKeys = file_get_contents('https://appleid.apple.com/auth/keys');
         $decodedPublicKeys = json_decode($publicKeys, true);
 
@@ -86,7 +83,7 @@ class ASDecoder {
 class ASPayload {
     protected $_instance;
 
-    public function __construct(?object $instance) {
+    public function __construct($instance) {
         if(is_null($instance)) {
             throw new Exception('ASPayload received null instance.');
         }
@@ -105,15 +102,15 @@ class ASPayload {
         return $this->_instance->$key = $val;
     }
 
-    public function getEmail() : ?string {
+    public function getEmail()  {
         return (isset($this->_instance->email)) ? $this->_instance->email : null;
     }
 
-    public function getUser() : ?string {
+    public function getUser() {
         return (isset($this->_instance->sub)) ? $this->_instance->sub : null;
     }
 
-    public function verifyUser(string $user) : bool {
+    public function verifyUser(string $user)  {
         return $user === $this->getUser();
     }
 }
