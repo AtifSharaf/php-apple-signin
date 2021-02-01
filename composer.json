@@ -1,8 +1,8 @@
 {
-    "name": "atif/php-apple-signin",
+    "name": "atifsharaf/php-apple-signin",
     "type": "library",
     "description": "A simple library to decode and parse Apple Sign In client tokens.",
-    "keywords": ["apple","sign","in","ios","php","jwt","jwk"],
+    "keywords": ["apple","sign","in"],
     "license": "MIT",
     "authors": [
         {
@@ -13,5 +13,8 @@
     ],
     "autoload": {
         "psr-4": { "AppleSignIn\\": "" }
+    },
+    "require": {
+        "php": ">=7.0.0"
     }
 }
